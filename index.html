@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ذاكر مع چو</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+    <h1>🎓 ذاكر مع چو</h1>
+    <button onclick="toggleTheme()">☀️ / 🌙</button>
+</header>
+
+<main>
+<section class="welcome">
+    <h2>أهلاً بيك يا بطل 👋</h2>
+    <p>نظّم وقتك.. وحقق هدفك</p>
+</section>
+
+<section class="stats">
+    <div class="card">
+        <h3>إجمالي المهام</h3>
+        <p id="tasks">0</p>
+    </div>
+    <div class="card">
+        <h3>المهام المنجزة</h3>
+        <p id="done">0</p>
+    </div>
+</section>
+
+<section class="card">
+    <h2>📚 المواد الدراسية</h2>
+    <input id="subjectInput" placeholder="اسم المادة">
+    <button onclick="addSubject()">إضافة مادة</button>
+    <ul id="subjectList"></ul>
+</section>
+
+<section class="card">
+    <h2>📅 جدول الدروس والمحاضرات</h2>
+    <input id="lessonName" placeholder="اسم الدرس أو المحاضرة">
+    <input id="teacher" placeholder="اسم المدرس">
+    <input id="lessonDate" type="date">
+    <input id="lessonTime" type="time">
+    <input id="lessonPlace" placeholder="مكان الدرس">
+    <button onclick="addLesson()">إضافة للجدول</button>
+    <ul id="lessonList"></ul>
+</section>
+
+<section class="card">
+    <h2>📝 مهام المذاكرة</h2>
+    <input id="taskInput" placeholder="مثلاً: مذاكرة الفصل الأول">
+    <button onclick="addTask()">إضافة مهمة</button>
+    <ul id="taskList"></ul>
+</section>
+
+<section class="card">
+    <h2>⏱️ مؤقت المذاكرة</h2>
+    <h1 id="timer">25:00</h1>
+    <button onclick="startTimer()">ابدأ</button>
+    <button onclick="pauseTimer()">إيقاف</button>
+    <button onclick="resetTimer()">إعادة</button>
+<button onclick="startBreak()">ابدأ الراحة 10 دقائق</button>
+</section>
+</main>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+let subjects = JSON.parse(localStorage.getItem("subjects") || "[]");
+let lessons = JSON.parse(localStorage.getItem("lessons") || "[]");
+
+function save() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("subjects", JSON.stringify(subjects));
+    localStorage.setItem("lessons", JSON.stringify(lessons));
+    render();
+}
+
+function render() {
+    const taskList = document.getElementById("taskList");
+    const subjectList = document.getElementById("subjectList");
+    const lessonList = document.getElementById("lessonList");
+
+    taskList.innerHTML = "";
+    subjectList.innerHTML = "";
+    lessonList.innerHTML = "";
+
+    tasks.forEach((task, i) => {
+        const li = document.createElement("li");
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = task.done;
+        check.onchange = () => {
+            tasks[i].done = check.checked;
+            save();
+        };
+        const span = document.createElement("span");
+        span.textContent = task.name;
+        li.append(check, span);
+        taskList.appendChild(li);
+    });
+
+    subjects.forEach((subject, i) => {
+        const li = document.createElement("li");
+        const span = document.createElement("span");
+        span.textContent = subject;
+        const del = document.createElement("button");
+        del.textContent = "حذف";
+        del.onclick = () => {
+            subjects.splice(i, 1);
+            save();
+        };
+        li.append(span, del);
+        subjectList.appendChild(li);
+    });
+
+    lessons.forEach((lesson, i) => {
+        const li = document.createElement("li");
+        const info = document.createElement("span");
+        info.textContent =
+            lesson.name + " | " + lesson.teacher +
+            " | " + lesson.date + " | " + lesson.time +
+            " | " + lesson.place;
+
+        const del = document.createElement("button");
+        del.textContent = "حذف";
+        del.onclick = () => {
+            lessons.splice(i, 1);
+            save();
+        };
+
+        li.append(info, del);
+        lessonList.appendChild(li);
+    });
+
+    document.getElementById("tasks").textContent = tasks.length;
+    document.getElementById("done").textContent =
+        tasks.filter(t => t.done).length;
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    if (!input.value.trim()) return;
+    tasks.push({name: input.value.trim(), done: false});
+    input.value = "";
+    save();
+}
+
+function addSubject() {
+    const input = document.getElementById("subjectInput");
+    if (!input.value.trim()) return;
+    subjects.push(input.value.trim());
+    input.value = "";
+    save();
+}
+
+function addLesson() {
+    const name = document.getElementById("lessonName");
+    const teacher = document.getElementById("teacher");
+    const date = document.getElementById("lessonDate");
+    const time = document.getElementById("lessonTime");
+    const place = document.getElementById("lessonPlace");
+
+    if (!name.value.trim() || !date.value || !time.value) {
+        alert("اكتب اسم الدرس والتاريخ والوقت");
+        return;
+    }
+
+    lessons.push({
+        name: name.value.trim(),
+        teacher: teacher.value.trim(),
+        date: date.value,
+        time: time.value,
+        place: place.value.trim()
+    });
+
+    name.value = "";
+    teacher.value = "";
+    date.value = "";
+    time.value = "";
+    place.value = "";
+    save();
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("dark",
+        document.body.classList.contains("dark"));
+}
+
+let seconds = 3600;
+let interval = null;
+
+function updateTimer() {
+    document.getElementById("timer").textContent =
+        String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
+        String(seconds % 60).padStart(2, "0");
+}
+
+function startTimer() {
+    if (interval) return;
+    interval = setInterval(() => {
+        if (seconds > 0) {
+            seconds--;
+            updateTimer();
+        } else {
+            pauseTimer();
+            alert("أحسنت! انتهت جلسة المذاكرة 🎉");
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(interval);
+    interval = null;
+}
+function resetTimer() {
+    pauseTimer();
+    seconds = 3600;
+    updateTimer();
+}
+
+function startBreak() {
+    pauseTimer();
+    seconds = 600;
+    updateTimer();
+    startTimer();
+}
+
+if (localStorage.getItem("dark") === "true") {
+    document.body.classList.add("dark");
+}
+
+render();
+updateTimer();
+</script>
+</body>
+</html>
