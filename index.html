@@ -3,20 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f6fb">
 <title>ذاكر مع چو</title>
-<link rel="stylesheet" href="/static/style.css">
+
+<style>
+:root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #202b45;
+    --muted: #718096;
+    --primary: #5865e8;
+    --border: #e5e9f2;
+    --input: #f8f9fd;
+}
+
+body.dark {
+    --bg: #101827;
+    --card: #1c293b;
+    --text: #f0f4ff;
+    --muted: #aab7ca;
+    --primary: #8290ff;
+    --border: #344258;
+    --input: #26364c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background .25s, color .25s;
+    min-height: 100vh;
+}
+
+header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+main {
+    max-width: 1000px;
+    width: 92%;
+    margin: 28px auto;
+}
+
+.welcome {
+    background: linear-gradient(120deg, #5865e8, #8795ff);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+}
+
+.welcome h2 {
+    margin-top: 0;
+    font-size: 25px;
+}
+
+.welcome p {
+    margin-bottom: 0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.035);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 21px;
+}
+
+.stats .card {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.stats h3 {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.stats p {
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0;
+}
+
+input:not([type="checkbox"]) {
+    width: 100%;
+    padding: 13px;
+    margin: 7px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--input);
+    color: var(--text);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary);
+}
+
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 19px;
+    margin: 5px 3px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity .2s;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+header button {
+    white-space: nowrap;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+li {
+    background: var(--input);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    overflow-wrap: anywhere;
+}
+
+li span {
+    flex: 1;
+    line-height: 1.7;
+}
+
+li button {
+    flex-shrink: 0;
+}
+
+input[type="checkbox"] {
+    width: 19px;
+    height: 19px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+}
+
+#timer {
+    font-size: 55px;
+    color: var(--primary);
+    text-align: center;
+    margin: 20px 0;
+    direction: ltr;
+}
+
+.timer-buttons {
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 14px 4%;
+    }
+
+    header h1 {
+        font-size: 19px;
+    }
+
+    header button {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    main {
+        width: 94%;
+        margin: 16px auto;
+    }
+
+    .welcome {
+        padding: 23px 18px;
+        border-radius: 15px;
+    }
+
+    .welcome h2 {
+        font-size: 21px;
+    }
+
+    .stats {
+        gap: 10px;
+    }
+
+    .card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .card h2 {
+        font-size: 18px;
+    }
+
+    .stats p {
+        font-size: 26px;
+    }
+
+    button {
+        padding: 11px 13px;
+    }
+
+    #timer {
+        font-size: 45px;
+    }
+
+    li {
+        padding: 10px;
+    }
+}
+</style>
 </head>
+
 <body>
 
 <header>
     <h1>🎓 ذاكر مع چو</h1>
-    <button onclick="toggleTheme()">☀️ / 🌙</button>
+    <button id="themeButton" onclick="toggleTheme()">🌙 الوضع الداكن</button>
 </header>
 
 <main>
+
 <section class="welcome">
     <h2>أهلاً بيك يا بطل 👋</h2>
-    <p>نظّم وقتك.. وحقق هدفك</p>
+    <p>نظّم وقتك.. وحقق هدفك 💪</p>
 </section>
 
 <section class="stats">
@@ -57,12 +313,15 @@
 
 <section class="card">
     <h2>⏱️ مؤقت المذاكرة</h2>
-    <h1 id="timer">25:00</h1>
-    <button onclick="startTimer()">ابدأ</button>
-    <button onclick="pauseTimer()">إيقاف</button>
-    <button onclick="resetTimer()">إعادة</button>
-<button onclick="startBreak()">ابدأ الراحة 10 دقائق</button>
+    <h1 id="timer">60:00</h1>
+    <div class="timer-buttons">
+        <button onclick="startTimer()">ابدأ</button>
+        <button onclick="pauseTimer()">إيقاف</button>
+        <button onclick="resetTimer()">إعادة</button>
+        <button onclick="startBreak()">راحة 10 دقائق</button>
+    </div>
 </section>
+
 </main>
 
 <script>
@@ -91,12 +350,15 @@ function render() {
         const check = document.createElement("input");
         check.type = "checkbox";
         check.checked = task.done;
+
         check.onchange = () => {
             tasks[i].done = check.checked;
             save();
         };
+
         const span = document.createElement("span");
         span.textContent = task.name;
+
         li.append(check, span);
         taskList.appendChild(li);
     });
@@ -105,12 +367,15 @@ function render() {
         const li = document.createElement("li");
         const span = document.createElement("span");
         span.textContent = subject;
+
         const del = document.createElement("button");
         del.textContent = "حذف";
+
         del.onclick = () => {
             subjects.splice(i, 1);
             save();
         };
+
         li.append(span, del);
         subjectList.appendChild(li);
     });
@@ -118,6 +383,7 @@ function render() {
     lessons.forEach((lesson, i) => {
         const li = document.createElement("li");
         const info = document.createElement("span");
+
         info.textContent =
             lesson.name + " | " + lesson.teacher +
             " | " + lesson.date + " | " + lesson.time +
@@ -125,6 +391,7 @@ function render() {
 
         const del = document.createElement("button");
         del.textContent = "حذف";
+
         del.onclick = () => {
             lessons.splice(i, 1);
             save();
@@ -142,6 +409,7 @@ function render() {
 function addTask() {
     const input = document.getElementById("taskInput");
     if (!input.value.trim()) return;
+
     tasks.push({name: input.value.trim(), done: false});
     input.value = "";
     save();
@@ -150,6 +418,7 @@ function addTask() {
 function addSubject() {
     const input = document.getElementById("subjectInput");
     if (!input.value.trim()) return;
+
     subjects.push(input.value.trim());
     input.value = "";
     save();
@@ -185,9 +454,23 @@ function addLesson() {
 
 function toggleTheme() {
     document.body.classList.toggle("dark");
-    localStorage.setItem("dark",
-        document.body.classList.contains("dark"));
+
+    const dark = document.body.classList.contains("dark");
+    localStorage.setItem("dark", dark);
+    updateThemeButton();
 }
+
+function updateThemeButton() {
+    const dark = document.body.classList.contains("dark");
+    document.getElementById("themeButton").textContent =
+        dark ? "☀️ الوضع الفاتح" : "🌙 الوضع الداكن";
+}
+
+if (localStorage.getItem("dark") === "true") {
+    document.body.classList.add("dark");
+}
+
+updateThemeButton();
 
 let seconds = 3600;
 let interval = null;
@@ -200,6 +483,7 @@ function updateTimer() {
 
 function startTimer() {
     if (interval) return;
+
     interval = setInterval(() => {
         if (seconds > 0) {
             seconds--;
@@ -215,6 +499,7 @@ function pauseTimer() {
     clearInterval(interval);
     interval = null;
 }
+
 function resetTimer() {
     pauseTimer();
     seconds = 3600;
@@ -228,12 +513,9 @@ function startBreak() {
     startTimer();
 }
 
-if (localStorage.getItem("dark") === "true") {
-    document.body.classList.add("dark");
-}
-
 render();
 updateTimer();
 </script>
+
 </body>
 </html>
