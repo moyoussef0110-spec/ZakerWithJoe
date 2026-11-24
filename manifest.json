@@ -1,0 +1,19 @@
+{
+  "name": "ذاكر مع چو",
+  "short_name": "ذاكر مع چو",
+  "description": "تطبيق تنظيم المذاكرة والمهام والدروس",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#5865e8",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
