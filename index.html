@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f4f6fb">
+<meta name="theme-color" content="#f4f6fb"> 
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon.png">  
 <title>ذاكر مع چو</title>
 
 <style>
@@ -516,6 +518,14 @@ function startBreak() {
 render();
 updateTimer();
 </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("التطبيق جاهز للعمل بدون إنترنت"))
+      .catch(error => console.log("Service Worker Error:", error));
+  });
+}
+</script>
 </body>
 </html>
